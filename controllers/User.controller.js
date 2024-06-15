@@ -8,12 +8,8 @@ import { sendOTP } from "../services/emailService/sendOTP.js"
 
 export const registerUser = async (req, res, next) => {
     try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        const user = await UserModel.create({
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword
-        })
+        const password = await bcrypt.hash(req.body.password, 10)
+        const user = await UserModel.create({ ...req.body, password })
 
         return res.status(201).json({
             message: "User Register",
@@ -34,16 +30,10 @@ export const googleLogin = async (req, res, next) => {
         if (!req.body.googleId) {
             return res.status(401).json({ message: "Username OR Password Wrong!" });
         }
-        const hashedPassword = await bcrypt.hash(req.body.googleId, 10)
+        const password = await bcrypt.hash(req.body.googleId, 10)
         const user = await UserModel.findOneAndUpdate(
             { googleId: req.body.googleId },
-            {
-                avatar: req.body.avatar,
-                name: req.body.name,
-                email: req.body.email,
-                googleId: req.body.googleId,
-                password: hashedPassword
-            }, { upsert: true, new: true })
+            { ...req.body, password }, { upsert: true, new: true })
 
         const jwtToken = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '1h' });
 
