@@ -1,32 +1,28 @@
-import JwtService from '../services/jwtService.js'
+import { JWT_SECRET } from "../config/index.js"
+import jwt from "jsonwebtoken"
+
 
 
 const auth = async (req, res, next) => {
-
-    let authHeader = req.headers.authorization
+    const authHeader = req.headers.authorization
 
     if (!authHeader) {
-        return res.status(401).json({ message: "Username or password wrong!" });
+        return res.status(401).json({ message: "User Not Found" })
     }
 
     const token = authHeader.split(' ')[1]
-    console.log('token', token)
 
     try {
-        const { _id, role } = await JwtService.verify(token);
-        const user = {
-            _id,
-            role
-        }
-
-        console.log("user", user)
-        req.user = user;
+        const { _id, name, email } = jwt.verify(token, JWT_SECRET)
+        const user = { _id, name, email }
+        req.user = user
         next()
-
     } catch (err) {
-        return res.status(401).json({ message: err.message });
+        return res.status(500).json({
+            message: err.message,
+            error: err
+        })
     }
 }
-
 
 export default auth
