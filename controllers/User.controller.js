@@ -218,8 +218,7 @@ export const getUser = async (req, res, next) => {
         [data, count] = await Promise.all([
             UserModel.find(filter).limit(limit).skip((page * limit) - limit),
             UserModel.countDocuments(filter)
-        ]
-        )
+        ])
 
         return res.status(200).json({
             message: "User",

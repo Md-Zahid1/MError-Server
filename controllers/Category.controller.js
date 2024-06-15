@@ -41,8 +41,7 @@ export const getCategory = async (req, res, next) => {
         [data, count] = await Promise.all([
             CategoryModel.find(filter).limit(limit).skip((page * limit) - limit),
             CategoryModel.countDocuments(filter)
-        ]
-        )
+        ])
 
         return res.status(200).json({
             message: "Category",
