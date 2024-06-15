@@ -8,6 +8,9 @@ import cors from 'cors'
 
 
 
+
+const port = process.env.PORT || 5000
+
 const app = express();
 const jsonParsor = bodyParser.json()
 
@@ -22,4 +25,4 @@ app.use(express.json())
 app.use('/api', routes)
 
 
-app.listen(APP_PORT, () => console.log(`listning on port ${APP_PORT}`))
+app.listen(port, () => console.log(`listning on port ${port}`))
